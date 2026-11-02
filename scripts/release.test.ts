@@ -1,10 +1,17 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { mkdtemp, readFile, rm, access } from "node:fs/promises";
+import {
+  mkdtemp,
+  readFile,
+  rm,
+  access,
+  mkdir,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
-import { downloadRelease, type Request } from "./release.ts";
+import { downloadRelease, installRelease, type Request } from "./release.ts";
 
 const sha = "a".repeat(40);
 async function fixtures(): Promise<Record<string, Buffer>> {
@@ -185,3 +192,40 @@ if (process.env.COLLECTION_BUNDLE && process.env.IMPORTED_COLLECTION_BUNDLE) {
     });
   });
 }
+
+test("project-only data removes the draft PDF and download link while keeping the public biography", async () => {
+  const files = await fixtures();
+  delete files["data/profile.json"];
+  delete files["resume/resume.pdf"];
+  const workspace = await mkdtemp(join(tmpdir(), "projects-only-"));
+  try {
+    const source = join(workspace, "release"),
+      destination = join(workspace, "public");
+    await mkdir(join(destination, "data"), { recursive: true });
+    await mkdir(join(destination, "resume"));
+    await writeFile(
+      join(destination, "data/profile.json"),
+      await readFile(
+        new URL("../tests/fixtures/profile.json", import.meta.url),
+      ),
+    );
+    await writeFile(
+      join(destination, "resume/resume.pdf"),
+      "%PDF-draft-never-publish",
+    );
+    await downloadRelease({
+      repository: "owner/data",
+      destination: source,
+      request: mocked(files).request,
+    });
+    await installRelease(source, destination);
+    const profile = JSON.parse(
+      await readFile(join(destination, "data/profile.json"), "utf8"),
+    );
+    assert.equal(profile.resume_url, null);
+    assert.equal(profile.resume_draft, true);
+    await assert.rejects(access(join(destination, "resume/resume.pdf")));
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});

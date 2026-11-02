@@ -38,3 +38,5 @@ Edit `src/main.tsx` for tone and interactions, `src/style.css` for appearance. G
 PORTFOLIO_DATA_REPOSITORY is configured as aryagirigoudar/portfolio-jsons. Production imports run through `npm run data:sync` during enabled default-branch builds; use only in disposable CI/build checkouts because success replaces public/data and public/resume. Browser requests stay same-origin and contain no private credentials. `npm run test:data` checks the downloader with mocked responses.
 
 A six-hour scheduled website refresh picks up merged approved data, or a manual workflow can do so sooner. PAGES_ENABLED remains false, and the included resume remains draft. Missing/invalid production data fails the build and leaves the last deployment intact; it never silently deploys preview data.
+
+Project-only releases are supported: the build retains the website-authored public biography, clears its resume URL and removes the PDF entirely. This permits project updates without publishing an unapproved draft resume. Full profile/PDF releases still require explicit approval.
