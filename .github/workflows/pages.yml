@@ -1,0 +1,54 @@
+name: Portfolio checks and Pages deployment
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@f548e57e544e1ff5a4c46bf1e1b8685f8e4a348a
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+        env:
+          PAGES_BASE_PATH: ${{ vars.PAGES_BASE_PATH || '/' }}
+      - name: Require explicitly approved public artifacts
+        if: vars.PAGES_ENABLED == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'pull_request'
+        run: npm run check:publication
+      - uses: actions/upload-pages-artifact@5f327015a708106f6f1b7c9a633901af30fe80cb
+        if: vars.PAGES_ENABLED == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'pull_request'
+        with:
+          path: dist
+  deploy:
+    if: vars.PAGES_ENABLED == 'true' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: pages-production
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
