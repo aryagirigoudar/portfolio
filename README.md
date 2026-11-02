@@ -29,6 +29,6 @@ The included local preview was transcribed from an earlier portfolio. Verify all
 
 ## Hosting
 
-Copy this directory's contents to the approved public repository root. Enable Pages with GitHub Actions. Set `PAGES_BASE_PATH=/repository-name/` for a project site or `/` for an account site/custom domain. The Pages workflow tests/builds PRs, then deploys approved default-branch artifacts. The owner reviews and merges updates.
+Copy this directory's contents to the approved public repository root. After approving publication, enable Pages with GitHub Actions and set `PAGES_ENABLED=true` (deployment is disabled by default). Set `PAGES_BASE_PATH=/repository-name/` for a project site or `/` for an account site/custom domain. The Pages workflow tests/builds PRs, then deploys approved default-branch artifacts. The owner reviews and merges updates.
 
 Edit `src/main.tsx` for tone and interactions, `src/style.css` for appearance. GIFs are only requested after a reaction is opened; reduced-motion users receive still frames and can explicitly play them. No backend is needed for contact links.
