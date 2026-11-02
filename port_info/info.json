@@ -1,7 +1,7 @@
 {
   "name": "Public portfolio frontend",
-  "description": "Responsive React and TypeScript portfolio with the original personal photo shown directly on all devices, sarcastic copy, opt-in GIF reactions, filtered project data and a downloadable draft resume. Includes Pages workflow; not deployed.",
+  "description": "Responsive static portfolio with the original photo and sarcastic GIF reactions. Enabled production builds import a validated immutable release from public portfolio-jsons; deployment remains disabled and bundled resume data remains draft.",
   "icon": null,
-  "updated_at": "2026-11-02T07:05:40Z",
-  "last_change": "Successfully pushed codex/setup to the owner-created GitHub repository and prepared initial review. No default-branch changes, merges, deployment or live synchronization were performed."
+  "updated_at": "2026-11-02T07:27:44Z",
+  "last_change": "Added strict public-data schemas, bounded immutable snapshot download, manifest/hash validation, scheduled refresh and importer tests. Configured non-secret routing without enabling hosting."
 }

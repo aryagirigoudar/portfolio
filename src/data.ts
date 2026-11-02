@@ -7,7 +7,7 @@ const httpsUrl = z
     const url = new URL(value);
     return url.protocol === "https:" && !url.username && !url.password;
   });
-const projectSchema = z.object({
+const projectSchema = z.strictObject({
   id: z.string().uuid(),
   title: z.string().max(120),
   tagline: z.string().max(200),
@@ -31,13 +31,13 @@ const projectSchema = z.object({
   source_url: httpsUrl.nullable(),
   updated_at: z.string().datetime(),
 });
-export const datasetSchema = z.object({
+export const datasetSchema = z.strictObject({
   schema_version: z.literal(1),
   generated_at: z.string().datetime(),
   preview: z.boolean().optional(),
   projects: z.array(projectSchema).max(1000),
 });
-export const profileSchema = z.object({
+export const profileSchema = z.strictObject({
   schema_version: z.literal(1),
   name: z.string(),
   title: z.string(),
@@ -48,7 +48,7 @@ export const profileSchema = z.object({
   linkedin: httpsUrl.nullable(),
   skills: z.record(z.string(), z.array(z.string())),
   experience: z.array(
-    z.object({
+    z.strictObject({
       role: z.string(),
       company: z.string(),
       period: z.string(),
@@ -56,7 +56,7 @@ export const profileSchema = z.object({
     }),
   ),
   education: z.array(
-    z.object({
+    z.strictObject({
       institution: z.string(),
       qualification: z.string(),
       period: z.string(),
