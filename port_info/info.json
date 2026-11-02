@@ -1,7 +1,7 @@
 {
   "name": "Public portfolio frontend",
-  "description": "Responsive static portfolio with the original photo and sarcastic GIF reactions. Enabled production builds import a validated immutable release from public portfolio-jsons; deployment remains disabled and bundled resume data remains draft.",
+  "description": "Supports verified full and project-only public releases. Project-only imports remove the draft PDF and its download links while retaining website-authored biography content. Hosting remains disabled.",
   "icon": null,
-  "updated_at": "2026-11-02T07:27:44Z",
-  "last_change": "Added strict public-data schemas, bounded immutable snapshot download, manifest/hash validation, scheduled refresh and importer tests. Configured non-secret routing without enabling hosting."
+  "updated_at": "2026-11-02T14:47:16Z",
+  "last_change": "Added project-only import and production guards so a draft resume is never shipped with live project metadata. Importer, build and browser checks cover the change."
 }

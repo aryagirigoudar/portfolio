@@ -12,13 +12,11 @@ import { dirname, join } from "node:path";
 import { z } from "zod";
 import { datasetSchema, profileSchema } from "../src/data.ts";
 
-const required = [
-  "data/projects.json",
-  "data/profile.json",
-  "resume/resume.pdf",
-];
+const required = ["data/projects.json"];
+const resumeFiles = ["data/profile.json", "resume/resume.pdf"];
 const allowed = (name: string): boolean =>
-  required.includes(name) || /^data\/icons\/[a-f0-9]{64}\.png$/.test(name);
+  [...required, ...resumeFiles].includes(name) ||
+  /^data\/icons\/[a-f0-9]{64}\.png$/.test(name);
 const manifestSchema = z.strictObject({
   schema_version: z.literal(1),
   files: z.record(z.string(), z.string().regex(/^[a-f0-9]{64}$/)),
@@ -102,7 +100,9 @@ export async function downloadRelease(options: {
   if (
     names.length > 1003 ||
     !names.every(allowed) ||
-    !required.every((name) => names.includes(name))
+    !required.every((name) => names.includes(name)) ||
+    (resumeFiles.some((name) => names.includes(name)) &&
+      !resumeFiles.every((name) => names.includes(name)))
   )
     throw new Error("Release path allowlist failed");
   const files = new Map<string, Buffer>();
@@ -119,13 +119,15 @@ export async function downloadRelease(options: {
   const projects = datasetSchema.parse(
     JSON.parse(files.get("data/projects.json")!.toString()),
   );
-  const profile = profileSchema.parse(
-    JSON.parse(files.get("data/profile.json")!.toString()),
-  );
-  if (projects.preview || profile.resume_draft)
-    throw new Error("Draft data cannot be deployed");
-  if (files.get("resume/resume.pdf")!.subarray(0, 5).toString() !== "%PDF-")
-    throw new Error("Resume is not a PDF");
+  if (projects.preview) throw new Error("Draft data cannot be deployed");
+  if (files.has("data/profile.json")) {
+    const profile = profileSchema.parse(
+      JSON.parse(files.get("data/profile.json")!.toString()),
+    );
+    if (profile.resume_draft) throw new Error("Draft data cannot be deployed");
+    if (files.get("resume/resume.pdf")!.subarray(0, 5).toString() !== "%PDF-")
+      throw new Error("Resume is not a PDF");
+  }
   const icons = new Set(
     projects.projects.flatMap((p) => (p.icon_url ? [p.icon_url] : [])),
   );
@@ -163,15 +165,29 @@ export async function installRelease(
   const manifest = manifestSchema.parse(
     JSON.parse(await readFile(join(source, "manifest.json"), "utf8")),
   );
+  // Project-only releases keep the website-authored public biography, but never ship its draft PDF.
+  const fallback = !("data/profile.json" in manifest.files)
+    ? profileSchema.parse(
+        JSON.parse(
+          await readFile(join(publicDirectory, "data/profile.json"), "utf8"),
+        ),
+      )
+    : null;
   for (const directory of ["data", "resume"]) {
     await rm(join(publicDirectory, directory), {
       recursive: true,
       force: true,
     });
-    await cp(join(source, directory), join(publicDirectory, directory), {
-      recursive: true,
-    });
+    if (directory === "data" || "resume/resume.pdf" in manifest.files)
+      await cp(join(source, directory), join(publicDirectory, directory), {
+        recursive: true,
+      });
   }
+  if (fallback)
+    await writeFile(
+      join(publicDirectory, "data/profile.json"),
+      JSON.stringify({ ...fallback, resume_url: null }, null, 2) + "\n",
+    );
   await writeFile(
     join(publicDirectory, "manifest.json"),
     JSON.stringify(manifest, null, 2) + "\n",

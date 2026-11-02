@@ -192,3 +192,26 @@ if (bundle) {
     );
   });
 }
+
+test("project-only publication has no resume download link", async ({
+  page,
+}) => {
+  const profile = JSON.parse(
+    readFileSync(new URL("./fixtures/profile.json", import.meta.url), "utf8"),
+  );
+  profile.resume_url = null;
+  const pdfRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith(".pdf")) pdfRequests.push(request.url());
+  });
+  await page.route("**/data/profile.json", (route) =>
+    route.fulfill({ json: profile }),
+  );
+  await page.goto("./");
+  await expect(page.locator(".timeline article").first()).toBeVisible();
+  await expect(page.locator(".hero-resume")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Download resume/ })).toHaveCount(
+    0,
+  );
+  expect(pdfRequests).toEqual([]);
+});
