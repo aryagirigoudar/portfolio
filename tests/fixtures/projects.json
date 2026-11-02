@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-11-02T04:57:11Z",
+  "preview": true,
+  "projects": [
+    {
+      "category": "Machine learning",
+      "demo_url": null,
+      "description": "An AI-assisted tool that evaluates news credibility, scrapes articles with IP rotation, finds related history and tracks market sentiment.",
+      "featured": true,
+      "icon_url": null,
+      "id": "9b0d55df-8f98-4776-9885-f12dca19ee4e",
+      "sort_order": 0,
+      "source_url": null,
+      "status": "unspecified",
+      "tagline": "A second opinion for the headlines.",
+      "technologies": ["Transformers", "Selenium", "MySQL", "Naive Bayes"],
+      "title": "News credibility analyser",
+      "updated_at": "2026-11-02T04:57:11Z"
+    },
+    {
+      "category": "Communication",
+      "demo_url": null,
+      "description": "A WhatsApp-inspired socket chat application for securely exchanging messages, media and documents over TCP.",
+      "featured": true,
+      "icon_url": null,
+      "id": "0bea5792-c0ae-464b-b928-289c36d636e5",
+      "sort_order": 1,
+      "source_url": null,
+      "status": "unspecified",
+      "tagline": "Conversations with a little more privacy.",
+      "technologies": ["Python", "Sockets", "TCP", "RSA"],
+      "title": "Encrypted message app",
+      "updated_at": "2026-11-02T04:57:11Z"
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,51 @@
+{
+  "education": [
+    {
+      "institution": "PES University",
+      "period": "",
+      "qualification": "Computer Science degree"
+    }
+  ],
+  "email": "arya.girigoudar@gmail.com",
+  "experience": [
+    {
+      "company": "HirePro",
+      "highlights": [
+        "Building reliable assessment and recruitment workflows through thoughtfully designed CRUD systems, codebase improvements, and question-paper management features."
+      ],
+      "period": "Aug 2024 — Present",
+      "role": "Software Engineer I"
+    },
+    {
+      "company": "Alcon",
+      "highlights": [
+        "Designed ETL data flows with SAP BODS, Datasphere and Analytics Cloud, while automating repetitive work with Python."
+      ],
+      "period": "Feb 2024 — Aug 2024",
+      "role": "BI Architect & DevOps Intern"
+    },
+    {
+      "company": "Opsverse",
+      "highlights": [
+        "Built data-driven customer emails, REST APIs and forecasting workflows using Flask, Grafana, LogQL and PostgreSQL."
+      ],
+      "period": "Apr 2023 — May 2023",
+      "role": "Software Engineer Intern"
+    }
+  ],
+  "github": null,
+  "linkedin": null,
+  "location": "Bengaluru, India",
+  "name": "Arya Girigoudar",
+  "resume_draft": true,
+  "resume_url": "resume/resume.pdf",
+  "schema_version": 1,
+  "skills": {
+    "Data": ["PostgreSQL", "MySQL", "SAP BODS"],
+    "Frameworks": ["Django", "Flask", "REST APIs"],
+    "Languages": ["Python", "C/C++"],
+    "Other tools": ["Git", "Grafana", "Selenium", "Machine Learning"]
+  },
+  "summary": "Software engineer based in Bengaluru, India. I build dependable products and practical data workflows, with an interest in making complex systems straightforward for the people using them.",
+  "title": "Software Engineer"
+}
